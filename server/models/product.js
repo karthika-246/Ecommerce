@@ -1,9 +1,11 @@
-const mongoose = require('mongoose'); // ✅ Required at the top
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  imageUrl: String,
   name: String,
-  price: Number
+  category: String,
+  image: String,
+  new_price: Number,
+  old_price: Number,
 });
 
 module.exports = mongoose.model('Product', productSchema);

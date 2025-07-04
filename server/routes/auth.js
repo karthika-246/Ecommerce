@@ -1,29 +1,23 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
+// const express = require('express');
+// const bcrypt = require('bcrypt');
+// const router = express.Router();
+// const User = require('../models/User'); // your Mongoose model
 
-const User = require('../models/User');
-const router = express.Router();
+// // Register
+// router.post('/register', async (req, res) => {
+//   try {
+//     const { firstname, lastname, email, phone, password } = req.body;
 
-router.post('/register/:role', async (req, res) => {
-  const { username, password } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  const Model = req.params.role === 'admin' ? Admin : User;
-  const user = new Model({ username, password: hash });
-  await user.save();
-  res.send(`${req.params.role} registered`);
-});
+//     const existing = await User.findOne({ email });
+//     if (existing) return res.status(400).json({ msg: 'Email already exists' });
 
-router.post('/login/:role', async (req, res) => {
-  const { username, password } = req.body;
-  const Model = req.params.role === 'admin' ? Admin : User;
-  const user = await Model.findOne({ username });
-  if (!user) return res.status(400).send('User not found');
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).send('Invalid credentials');
-  const token = jwt.sign({ id: user._id, role: req.params.role }, process.env.JWT_SECRET);
-  res.json({ token });
-});
+//     const hashedPassword = await bcrypt.hash(password, 10);
 
-module.exports = router;
+//     const newUser = new User({ firstname, lastname, email, phone, password: hashedPassword });
+//     await newUser.save();
+
+//     res.status(201).json({ msg: 'Registered successfully!' });
+//   } catch (err) {
+//     res.status(500).json({ msg: 'Server error' });
+//   }
+// });

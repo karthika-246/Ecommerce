@@ -1,11 +1,12 @@
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
-import ProductDisplay from './Components/productdisplay/productdisplay';
+import ProductDisplay from'./Components/productdisplay/productdisplay';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Shop from './pages/Shop';
 import ShopCategory from './pages/ShopCategory';
 import Product from './pages/Product';
-import Login from './Components/SignupLogin/Login';
+import UserLogin from'./Components/SignupLogin/Login';
+import UserRegister from'./Components/SignupLogin/Register';
 import Footer from './Components/Footer/Footer';
 import men_banner from './Components/Assets/banner_mens.png';
 import women_banner from './Components/Assets/banner_women.png';
@@ -19,36 +20,39 @@ import ProductForm from './Components/Admin/ProductForm';
 
 function App() {
   return (
-    <div>
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="App">
         <Navbar />
 
         <Routes>
-          {/* Shop & Product Routes */}
+          {/* Shop Routes */}
           <Route path="/" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDisplay />} />
           <Route path="/product" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
 
-          {/* Category Pages */}
+          {/* Shop Categories */}
           <Route path="/men" element={<ShopCategory banner={men_banner} category="men" />} />
           <Route path="/women" element={<ShopCategory banner={women_banner} category="women" />} />
           <Route path="/kid" element={<ShopCategory banner={kids_banner} category="kid" />} />
 
-          {/* User Login */}
-          <Route path="/login" element={<Login />} />
+          {/* User Authentication */}
+          <Route path="/login" element={<UserLogin />} />
+          <Route path="/register" element={<UserRegister />} />
 
-          {/* Admin Auth & Panel */}
+          {/* Admin Authentication */}
           <Route path="/admin" element={<Navigate to="/admin/login" />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/register" element={<AdminRegister />} />
-          <Route path="/admin/products" element={<ProductForm />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+
+          {/* Admin Product Form */}
+          <Route path="/admin/productform" element={<ProductForm />} />
         </Routes>
 
         <Footer />
         <ToastContainer position="top-right" autoClose={2000} theme="colored" />
-      </BrowserRouter>
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 

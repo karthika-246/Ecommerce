@@ -1,42 +1,38 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Admin/Login.css';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import './register.css';
 
 const AdminLogin = () => {
-const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setMessage('');
-
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', formData);
-      localStorage.setItem('adminToken', res.data.token);
-      setMessage('Login successful!');
+      const res = await axios.post('http://localhost:5000/api/admin/login', form);
+      setMessage(res.data.message);
+      setTimeout(() => {
+        navigate('/admin/productform');
+      }, 1000);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div className="admin-login">
+    <div className="auth-container">
       <h2>Admin Login</h2>
       <form onSubmit={handleSubmit}>
-        <input type="email" name="email" placeholder="Email" required onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
+        <input name="email" onChange={handleChange} placeholder="Email" required />
+        <input name="password" onChange={handleChange} type="password" placeholder="Password" required />
         <button type="submit">Login</button>
-        <p className="redirect-text">
-  Don’t have an account? <Link to="/admin-register">Register</Link>
-</p>
-
       </form>
       {message && <p>{message}</p>}
+      <p>New admin? <Link to="/admin/register" className="auth-link">Register here</Link></p>
     </div>
   );
 };

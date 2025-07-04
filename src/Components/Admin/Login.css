@@ -1,80 +1,61 @@
-/* src/Components/Admin/Admin.css */
 
-.admin-login {
+.admin-login-container {
   max-width: 400px;
-  margin: 120px auto;
+  margin: 80px auto;
   padding: 30px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  animation: fadeIn 0.5s ease-in;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.admin-login h2 {
+.admin-login-container h2 {
   text-align: center;
-  margin-bottom: 20px;
   color: #333;
+  margin-bottom: 20px;
 }
 
-.admin-login form {
+.admin-login-form {
   display: flex;
   flex-direction: column;
 }
 
-.admin-login input {
+.admin-login-form input {
   padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
+  margin-bottom: 16px;
   border: 1px solid #ccc;
-  font-size: 16px;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
-.admin-login button {
+.admin-login-form input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.admin-login-form button {
   padding: 12px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 5px;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
-
-.admin-login button:hover {
-  background-color: #0056b3;
+.admin-login-form button:hover {
+  background-color: #007bff ;
 }
-
-.admin-login p {
+.login-link {
+  text-align: center;
   margin-top: 15px;
-  text-align: center;
-  color: #d9534f;
-  font-weight: 500;
+  font-size: 14px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.redirect-text {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.95rem;
-}
-
-.redirect-text a {
+.login-link a {
   color: #007bff;
   text-decoration: none;
-  font-weight: 600;
 }
 
-.redirect-text a:hover {
+.login-link a:hover {
   text-decoration: underline;
 }
