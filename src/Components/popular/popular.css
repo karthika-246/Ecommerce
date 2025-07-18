@@ -1,0 +1,244 @@
+.popular {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 30px 60px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #fefefe;
+}
+
+.popular h1 {
+  color: #171717;
+  font-size: 50px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.popular hr {
+  width: 200px;
+  height: 6px;
+  border-radius: 10px;
+  background: #252525;
+  margin: 0;
+}
+
+/* Search */
+.search-bar {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.search-bar input {
+  padding: 10px 20px;
+  width: 300px;
+  font-size: 16px;
+  border: 1px solid #0f0f0f;
+  border-radius: 20px;
+  outline: none;
+}
+
+.search-bar .search-btn {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: rgb(197, 197, 197);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.search-bar .search-btn:hover {
+  background-color: #a7a5a5;
+}
+
+/* Product Grid */
+.popular-item {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 40px;
+  width: 100%;
+}
+
+/* Product Card */
+.item-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.item-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+.image-container {
+  width: 100%;
+  height: 250px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.image-container img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+
+/* Name */
+.item-wrapper h3 {
+  margin: 10px 0 5px;
+  font-size: 16px;
+  color: #222;
+}
+
+/* Price Section */
+.price-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.price-section .new-price {
+  font-weight: bold;
+  color: #000;
+}
+
+.price-section .old-price {
+  text-decoration: line-through;
+  color: gray;
+  font-size: 14px;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cart-btn,
+.detail-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.cart-btn {
+  background-color: #06ac00e1;
+  color: white;
+}
+
+.cart-btn:hover {
+  background-color: #333;
+}
+
+.cart-btn.in-cart {
+  background-color: #d32f2f;
+}
+
+.cart-btn.in-cart:hover {
+  background-color: #b71c1c;
+}
+
+.detail-btn {
+  background-color: #1e88e5;
+  color: white;
+}
+
+.detail-btn:hover {
+  background-color: #1565c0;
+}
+
+/* Detail View */
+.product-detail-inline {
+  margin-top: 12px;
+  background-color: #f9f9f9;
+  padding: 10px 14px;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+}
+
+/* Cart Section */
+.cart-section {
+  margin-top: 50px;
+  width: 100%;
+  padding: 20px;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.cart-section h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.popular-item {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 40px;
+  justify-items: center; 
+  width: 100%;
+}
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-control button {
+  padding: 4px 10px;
+  font-size: 16px;
+  background-color: #ddd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.quantity-control span {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+.cart-total {
+  margin-top: 20px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+}
