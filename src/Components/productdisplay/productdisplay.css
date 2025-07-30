@@ -1,3 +1,4 @@
+
 /* Global Layout */
 .productdisplay {
   display: flex;
@@ -112,7 +113,7 @@
 
 .productdisplay-right-price-old {
   text-decoration: line-through;
-  color: #999;
+  color: #302d2d;
 }
 
 .productdisplay-right-price-new {
@@ -122,9 +123,11 @@
 
 /* Description */
 .productdisplay-right-description {
-  font-size: 0.95rem;
-  color: #444;
+  /* font-size: 0.95rem; */
+  color: #202020;
   line-height: 1.6;
+  font-size: 20px;
+  text-align: justify;
 }
 
 /* Sizes */
@@ -238,4 +241,36 @@
     width: 100%;
     justify-content: center;
   }
+}
+.productdisplay-right-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.productdisplay-right-buttons button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.productdisplay-right-buttons button:first-child {
+  background-color: #28a745; /* Add to Cart - green */
+  color: white;
+}
+
+.productdisplay-right-buttons button:first-child:hover {
+  background-color: #218838;
+}
+
+.productdisplay-right-buttons button:last-child {
+  background-color: #ca4f39; /* Wishlist - yellow */
+  color: rgb(241, 238, 238);
+}
+
+.productdisplay-right-buttons button:last-child:hover {
+  background-color: #ff4221;
 }

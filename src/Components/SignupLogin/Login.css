@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #c3f1d1;
 }
 
 /* Login content container */
@@ -55,7 +56,7 @@
 /* Submit button */
 .login-form button {
   padding: 16px;
-  background-color: #007bff;
+  background-color: #00e787;
   color: white;
   font-size: 18px;
   border: none;
@@ -65,7 +66,7 @@
 }
 
 .login-form button:hover {
-  background-color: #0056b3;
+  background-color: #02da92;
 }
 
 /* Register link */

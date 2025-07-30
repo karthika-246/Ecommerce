@@ -1,44 +1,96 @@
 import React, { useContext } from 'react';
 import { ShopContext } from '../Context/ShopContext';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; 
+import './Cart.css';
 
-const ProductCard = ({ product }) => {
+const Cart = () => {
   const {
-    addToCart,
-    addToWishlist,
-    removeFromWishlist,
-    isInWishlist,
+    cartItems,
+    all_product,
+    removeFromCart,
+    updateCartItemCount,
+    getTotalCartAmount,
   } = useContext(ShopContext);
 
-  if (!product) return <div>No product data available</div>;
+  const navigate = useNavigate();
 
-  const handleWishlist = () => {
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id);
-      toast.info('Removed from wishlist');
-    } else {
-      addToWishlist(product.id);
-      toast.success('Added to wishlist');
-    }
-  };
-
-  const handleOrder = () => {
-    addToCart(product.id);
-    toast.success(`${product.name} added to cart!`);
+  const handlePlaceOrder = () => {
+    toast.success('🎉 Order Placed Successfully!', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'colored',
+    });
   };
 
   return (
-    <div className="product-card">
-      <img src={product.image} alt={product.name} width={150} />
-      <h3>{product.name}</h3>
-      <p>Price: ₹{product.price}</p>
-      <button onClick={handleOrder}>Add to Cart</button>
-      <button onClick={handleWishlist}>
-        {isInWishlist(product.id) ? '❤️ Remove' : '🤍 Wishlist'}
-      </button>
+    <div className="cart-page">
+      <h2>Shopping Cart</h2>
+      {all_product.map((product) => {
+        if (cartItems[product.id] > 0) {
+          return (
+            <div className="cart-item" key={product.id}>
+              <img src={product.image} alt={product.name} />
+              <div className="cart-item-details">
+                <h4>{product.name}</h4>
+                <p>₹{product.new_price} x {cartItems[product.id]}</p>
+                <p>Total: ₹{product.new_price * cartItems[product.id]}</p>
+                <div className="quantity-selector">
+                  <label>Qty: </label>
+                  <select
+                    value={cartItems[product.id]}
+                    onChange={(e) =>
+                      updateCartItemCount(Number(e.target.value), product.id)
+                    }
+                  >
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    style={{
+                      marginLeft: '1rem',
+                      background: '#ff4d4f',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '0.3rem 0.7rem',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => removeFromCart(product.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })}
+
+      <div className="cart-summary">
+        Grand Total: ₹{getTotalCartAmount()}
+      </div>
+
+      <div className="cart-actions">
+        <button className="place-order-btn" onClick={handlePlaceOrder}>
+          Place Order
+        </button>
+
+        <button className="continue-shopping" onClick={() => navigate('/')}>
+          ← Continue Shopping
+        </button>
+      </div>
     </div>
   );
 };
 
-export default ProductCard;
+export default Cart;
