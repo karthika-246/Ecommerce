@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -9,3 +10,17 @@ const userSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("User", userSchema);
+=======
+// server/models/User.js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  firstname: String,
+  lastname: String,
+  email: { type: String, unique: true },
+  password: String,
+  phone: String,
+});
+
+module.exports = mongoose.model('User', userSchema);
+>>>>>>> 5b91bf0 (updation1)

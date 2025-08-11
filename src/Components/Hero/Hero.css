@@ -2,7 +2,11 @@
     height:100vh;
     background: linear-gradient(180deg,#fde1ff,#e1ffea22 60%);
     display: flex;
+<<<<<<< HEAD
     margin-top: 120px;
+=======
+    margin-top: 90px;
+>>>>>>> 5b91bf0 (updation1)
 }
 .hero-left{
     flex: 1;

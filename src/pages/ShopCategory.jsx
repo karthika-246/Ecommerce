@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { ShopContext } from '../Context/ShopContext';
+<<<<<<< HEAD
 import '../pages/CSS/shopcategory.css';
+=======
+// import './ShopCategory.css';
+>>>>>>> 5b91bf0 (updation1)
 import { Link } from 'react-router-dom';
 
 const ShopCategory = ({ banner, category }) => {

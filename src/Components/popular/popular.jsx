@@ -27,6 +27,26 @@ const Popular = ({ defaultCategory = '' }) => {
   const toggleDetail = (id) => {
     setDetailVisibleId(prev => (prev === id ? null : id));
   };
+<<<<<<< HEAD
+=======
+
+  const handleQuantityChange = (id, type) => {
+    setCart(prev =>
+      prev.map(item => {
+        if (item.id === id) {
+          const newQty = type === 'inc' ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      })
+    );
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((acc, item) => acc + (Number(item.new_price) * item.quantity), 0);
+  };
+
+>>>>>>> 5b91bf0 (updation1)
   const filteredProducts = data_product.filter((item) => {
     const nameMatch = item.name.toLowerCase().includes((input || searchTerm).toLowerCase());
     const categoryMatch = selectedCategory
@@ -105,8 +125,47 @@ const Popular = ({ defaultCategory = '' }) => {
         )}
       </div>
 
+<<<<<<< HEAD
+=======
+      {/* Cart Section */}
+      <div className="cart-section">
+        <h2>Cart Items</h2>
+        {cart.length === 0 ? (
+          <p>Cart is empty.</p>
+        ) : (
+          <>
+            {cart.map((item, i) => (
+              <div key={i} className="cart-item">
+                <img src={item.image} alt={item.name} height="60" />
+                <span>{item.name}</span>
+                <span>₹{Number(item.new_price).toFixed(2)} each</span>
+                <div className="quantity-control">
+                  <button onClick={() => handleQuantityChange(item.id, 'dec')}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => handleQuantityChange(item.id, 'inc')}>+</button>
+                </div>
+                <span>Total: ₹{(Number(item.new_price) * item.quantity).toFixed(2)}</span>
+                <button
+                  onClick={() => toggleCartItem(item)}
+                  className="cart-btn in-cart"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <div className="cart-total">
+              <h3>Grand Total: ₹{calculateTotal().toFixed(2)}</h3>
+            </div>
+          </>
+        )}
+      </div>
+>>>>>>> 5b91bf0 (updation1)
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default Popular;
+=======
+export default Popular;
+>>>>>>> 5b91bf0 (updation1)

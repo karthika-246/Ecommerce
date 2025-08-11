@@ -5,6 +5,10 @@ import arrow_icon from '../Assets/arrow.png'
 import hero_img from '../Assets/hero_image.png'
 const Hero = () => {
   return (
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5b91bf0 (updation1)
       <div className='hero'>
         <div className="hero-left">
             <h2>NEW ARRIVALS ONLY</h2>
