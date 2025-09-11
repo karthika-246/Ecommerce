@@ -1,105 +1,8 @@
-<<<<<<< HEAD
-// import React, { useContext } from 'react';
-// import { ShopContext } from '../Context/ShopContext';
-// import { useNavigate } from 'react-router-dom';
-// import { toast } from 'react-toastify'; 
-// import './Cart.css';
-
-// const Cart = () => {
-//   const {
-//     cartItems,
-//     all_product,
-//     removeFromCart,
-//     updateCartItemCount,
-//     getTotalCartAmount,
-//   } = useContext(ShopContext);
-
-//   const navigate = useNavigate();
-
-//   const handlePlaceOrder = () => {
-//     toast.success('🎉 Order Placed Successfully!', {
-//       position: 'top-right',
-//       autoClose: 3000,
-//       hideProgressBar: false,
-//       closeOnClick: true,
-//       pauseOnHover: false,
-//       draggable: true,
-//       progress: undefined,
-//       theme: 'colored',
-//     });
-//   };
-
-//   return (
-//     <div className="cart-page">
-//       <h2>Shopping Cart</h2>
-//       {all_product.map((product) => {
-//         if (cartItems[product.id] > 0) {
-//           return (
-//             <div className="cart-item" key={product.id}>
-//               <img src={product.image} alt={product.name} />
-//               <div className="cart-item-details">
-//                 <h4>{product.name}</h4>
-//                 <p>₹{product.new_price} x {cartItems[product.id]}</p>
-//                 <p>Total: ₹{product.new_price * cartItems[product.id]}</p>
-//                 <div className="quantity-selector">
-//                   <label>Qty: </label>
-//                   <select
-//                     value={cartItems[product.id]}
-//                     onChange={(e) =>
-//                       updateCartItemCount(Number(e.target.value), product.id)
-//                     }
-//                   >
-//                     {[...Array(10)].map((_, i) => (
-//                       <option key={i + 1} value={i + 1}>
-//                         {i + 1}
-//                       </option>
-//                     ))}
-//                   </select>
-//                   <button
-//                     style={{
-//                       marginLeft: '1rem',
-//                       background: '#ff4d4f',
-//                       color: '#fff',
-//                       border: 'none',
-//                       padding: '0.3rem 0.7rem',
-//                       borderRadius: '4px',
-//                       cursor: 'pointer',
-//                     }}
-//                     onClick={() => removeFromCart(product.id)}
-//                   >
-//                     Remove
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-//           );
-//         }
-//         return null;
-//       })}
-
-//       <div className="cart-summary">
-//         Grand Total: ₹{getTotalCartAmount()}
-//       </div>
-
-//       <div className="cart-actions">
-//         <button className="place-order-btn" onClick={handlePlaceOrder}>
-//           Place Order
-//         </button>
-
-//         <button className="continue-shopping" onClick={() => navigate('/')}>
-//           ← Continue Shopping
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Cart;
-import React, { useContext, useEffect } from 'react';
-import { ShopContext } from '../Context/ShopContext';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; 
-import './Cart.css';
+import React, { useContext, useState, useEffect } from "react";
+import { ShopContext } from "../Context/ShopContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "./Cart.css";
 
 const Cart = () => {
   const {
@@ -108,139 +11,247 @@ const Cart = () => {
     removeFromCart,
     updateCartItemCount,
     getTotalCartAmount,
+    cartOrder, // ✅ get order from context
   } = useContext(ShopContext);
 
   const navigate = useNavigate();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [cardNumber, setCardNumber] = useState("");
+  const [upiId, setUpiId] = useState("");
 
-  // 🔹 Redirect to login if not logged in
+  // ✅ Redirect if not logged in
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      toast.info('Please login to view your cart', {
-        position: 'top-center',
-        autoClose: 2000,
-      });
-      navigate('/login');
+      toast.info("Please login to view your cart", { autoClose: 2000 });
+      navigate("/login");
     }
   }, [navigate]);
 
+  // ✅ Place Order -> Show Payment Modal
   const handlePlaceOrder = () => {
-    toast.success('🎉 Order Placed Successfully!', {
-      position: 'top-right',
-      autoClose: 3000,
-      theme: 'colored',
-    });
-    // You can also clear cart or send order API request here
-  };
-
-  return (
-    <div className="cart-page">
-      <h2>Shopping Cart</h2>
-      {all_product.map((product) => {
-        if (cartItems[product.id] > 0) {
-          return (
-            <div className="cart-item" key={product.id}>
-              <img src={product.image} alt={product.name} />
-              <div className="cart-item-details">
-                <h4>{product.name}</h4>
-                <p>₹{product.new_price} x {cartItems[product.id]}</p>
-                <p>Total: ₹{product.new_price * cartItems[product.id]}</p>
-                <div className="quantity-selector">
-                  <label>Qty: </label>
-                  <select
-                    value={cartItems[product.id]}
-                    onChange={(e) =>
-                      updateCartItemCount(Number(e.target.value), product.id)
-                    }
-                  >
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    style={{
-                      marginLeft: '1rem',
-                      background: '#ff4d4f',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '0.3rem 0.7rem',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => removeFromCart(product.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })}
-
-      <div className="cart-summary">
-        Grand Total: ₹{getTotalCartAmount()}
-      </div>
-
-      <div className="cart-actions">
-        <button className="place-order-btn" onClick={handlePlaceOrder}>
-          Place Order
-        </button>
-
-        <button className="continue-shopping" onClick={() => navigate('/')}>
-          ← Continue Shopping
-        </button>
-      </div>
-=======
-import React, { useContext } from 'react';
-import { ShopContext } from '../Context/ShopContext';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-const ProductCard = ({ product }) => {
-  const {
-    addToCart,
-    addToWishlist,
-    removeFromWishlist,
-    isInWishlist,
-  } = useContext(ShopContext);
-
-  if (!product) return <div>No product data available</div>;
-
-  const handleWishlist = () => {
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id);
-      toast.info('Removed from wishlist');
-    } else {
-      addToWishlist(product.id);
-      toast.success('Added to wishlist');
+    if (getTotalCartAmount() === 0) {
+      toast.warn("Your cart is empty!");
+      return;
     }
+    setShowPaymentModal(true);
   };
 
-  const handleOrder = () => {
-    addToCart(product.id);
-    toast.success(`${product.name} added to cart!`);
+  // ✅ Confirm Payment Validation
+  const handleConfirmPayment = () => {
+    if (paymentMethod === "card" && cardNumber.length < 12) {
+      toast.error("Please enter a valid card number");
+      return;
+    }
+    if (paymentMethod === "upi" && !upiId.includes("@")) {
+      toast.error("Please enter a valid UPI ID");
+      return;
+    }
+    setShowPaymentModal(false);
+    setShowInvoice(true);
+    toast.success("Payment Successful! Order Placed!", { autoClose: 2000 });
   };
+
+  // ✅ Get products in "recent-first" order
+  const cartProducts = cartOrder
+    .map((id) =>
+      all_product.find((p) => String(p._id || p.id) === String(id))
+    )
+    .filter((p) => p && cartItems[String(p._id || p.id)] > 0);
 
   return (
-    <div className="product-card">
-      <img src={product.image} alt={product.name} width={150} />
-      <h3>{product.name}</h3>
-      <p>Price: ₹{product.price}</p>
-      <button onClick={handleOrder}>Add to Cart</button>
-      <button onClick={handleWishlist}>
-        {isInWishlist(product.id) ? '❤️ Remove' : '🤍 Wishlist'}
-      </button>
->>>>>>> 5b91bf0 (updation1)
+    <div className="cart-container">
+      {/* 🛒 CART SECTION */}
+      {!showInvoice && (
+        <>
+          <h2 className="cart-title">🛒 Your Shopping Cart</h2>
+
+          <div className="cart-items">
+            {cartProducts.length === 0 ? (
+              <p className="empty-cart">Your cart is empty.</p>
+            ) : (
+              cartProducts.map((product) => {
+                const productId = String(product._id || product.id);
+                const qty = cartItems[productId];
+                const price = product.price || product.new_price || 0;
+
+                return (
+                  <div className="cart-card" key={productId}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="cart-img"
+                    />
+                    <div className="cart-info">
+                      <h3>{product.name}</h3>
+                      <p className="price">
+                        ₹{price} × {qty}
+                      </p>
+                      <p className="total">Total: ₹{price * qty}</p>
+
+                      <div className="cart-controls">
+                        <label>Qty:</label>
+                        <button
+                          className="qty-btn"
+                          onClick={() =>
+                            updateCartItemCount(qty - 1, productId)
+                          }
+                          disabled={qty <= 1}
+                        >
+                          -
+                        </button>
+                        <span className="qty-value">{qty}</span>
+                        <button
+                          className="qty-btn"
+                          onClick={() =>
+                            updateCartItemCount(qty + 1, productId)
+                          }
+                        >
+                          +
+                        </button>
+                        <button
+                          className="remove-btn"
+                          onClick={() => removeFromCart(productId)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* ✅ Order Summary */}
+          {cartProducts.length > 0 && (
+            <div className="cart-summary-box">
+              <h3>Order Summary</h3>
+              <p>
+                Grand Total:{" "}
+                <span className="summary-total">₹{getTotalCartAmount()}</span>
+              </p>
+              <button className="checkout-btn" onClick={handlePlaceOrder}>
+                Proceed to Payment
+              </button>
+              <button className="continue-btn" onClick={() => navigate("/")}>
+                ← Continue Shopping
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* 💳 PAYMENT MODAL */}
+      {showPaymentModal && (
+        <div className="payment-modal">
+          <div className="modal-content">
+            <h3>Payment Details</h3>
+            <label>
+              Payment Method:
+              <select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <option value="cod">Cash on Delivery</option>
+                <option value="card">Credit/Debit Card</option>
+                <option value="upi">UPI</option>
+              </select>
+            </label>
+            {paymentMethod === "card" && (
+              <input
+                type="text"
+                placeholder="Card Number"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+              />
+            )}
+            {paymentMethod === "upi" && (
+              <input
+                type="text"
+                placeholder="UPI ID"
+                value={upiId}
+                onChange={(e) => setUpiId(e.target.value)}
+              />
+            )}
+            <div className="modal-buttons">
+              <button onClick={handleConfirmPayment} className="confirm-btn">
+                Confirm Payment
+              </button>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🧾 INVOICE */}
+      {showInvoice && (
+        <div className="invoice-card">
+          <h2 className="invoice-title">Payment Receipt</h2>
+          <div className="invoice-section">
+            <p>
+              <strong>Customer:</strong> Karthika
+            </p>
+            <p>
+              <strong>Address:</strong> 47, Green Street, Chennai
+            </p>
+            <p>
+              <strong>Payment Method:</strong> {paymentMethod}
+            </p>
+          </div>
+          <div className="invoice-products">
+            {cartProducts.map((product) => {
+              const productId = String(product._id || product.id);
+              const qty = cartItems[productId];
+              const price = product.price || product.new_price || 0;
+              return (
+                <div className="invoice-item" key={productId}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="invoice-img"
+                  />
+                  <div>
+                    <h4>{product.name}</h4>
+                    <p>
+                      {qty} × ₹{price}
+                    </p>
+                    <p className="invoice-total">₹{price * qty}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="invoice-summary">
+            <p>
+              <strong>Grand Total:</strong> ₹{getTotalCartAmount()}
+            </p>
+            <p>
+              <strong>Delivery Date:</strong> 20 Aug 2025
+            </p>
+            <p>
+              <strong>Return Policy:</strong> 7 Days
+            </p>
+            <p>
+              <strong>Replace Policy:</strong> 15 Days
+            </p>
+          </div>
+          <div className="invoice-actions">
+            <button className="btn-home" onClick={() => navigate("/")}>
+              Back to Home
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-<<<<<<< HEAD
 export default Cart;
-=======
-export default ProductCard;
->>>>>>> 5b91bf0 (updation1)

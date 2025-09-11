@@ -1,18 +1,31 @@
-import React from 'react'
-import Hero from '../Components/Hero/Hero'
-import Popular from '../Components/popular/popular'
-import Offers from '../Components/Offers/Offers'
-import NewCollection from '../Components/NewCollections/NewCollection'
-const Shop = () => {
-  return (
-    <div>
-      <Hero/>
-      <Popular/>
-      <Offers/>
-      <NewCollection/>
-      
-    </div>
-  )
-}
+import React, { useContext } from "react";
+import { ShopContext } from "../Context/ShopContext";
+import { Link } from "react-router-dom";
 
-export default Shop
+const Shop = () => {
+  const { all_product } = useContext(ShopContext);
+
+  return (
+    <div className="shop-container">
+      <h2>🛍 All Products</h2>
+      <div className="shop-grid">
+        {all_product.map((product) => (
+          <div className="shop-card" key={product.id}>
+            {/* ✅ Clicking image or name navigates to /product/:id */}
+            <Link to={`/product/${product.id}`}>
+              <img src={product.image} alt={product.name} className="shop-img" />
+            </Link>
+
+            <Link to={`/product/${product.id}`} className="shop-name">
+              <h3>{product.name}</h3>
+            </Link>
+
+            <p>₹{product.price || product.new_price}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Shop;

@@ -1,19 +1,17 @@
-import React, { useContext } from 'react'
-import { ShopContext } from '../Context/ShopContext'
-import { useParams } from 'react-router-dom';
-import Breadcrums from '../Components/Breadcrums/Breadcrums';
-import ProductDisplay from '../Components/productdisplay/productdisplay';
-const Product = () => {
-  const {all_product}=useContext(ShopContext);
-  const{productId}= useParams();
-  const product=all_product.find(p => p.id === Number(productId));
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Product.css";
+
+const Product = ({ product }) => {
   return (
-    <div>
-      <Breadcrums product={product}/>
-      <ProductDisplay product={product}/>
+    <div className="product-card">
+      <Link to={`/product/${product.id}`}>
+        <img src={product.image} alt={product.name} />
+      </Link>
+      <h3>{product.name}</h3>
+      <p>₹{product.price}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Product
-
+export default Product;

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // ✅ added useNavigate
 import { ShopContext } from "../../Context/ShopContext";
 import { toast } from "react-toastify";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
@@ -7,11 +7,10 @@ import "./productdisplay.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // ✅ navigation hook
   const {
     all_product,
     addToCart,
-    removeFromCart,
-    cartItems,
     addToWishlist,
     removeFromWishlist,
     wishlistItems,
@@ -25,9 +24,6 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [mainImage, setMainImage] = useState("");
   const [isInWishlist, setIsInWishlist] = useState(false);
-
-  const productId = String(product?._id || product?.id);
-  const isInCart = cartItems[productId] > 0; // ✅ check cart
 
   useEffect(() => {
     if (product) {
@@ -80,22 +76,19 @@ const ProductDetails = () => {
       toast.error("Please select a size before adding to cart");
       return;
     }
-    addToCart(productId, selectedSize || null);
+    addToCart(product.id ?? product._id, selectedSize || null);
     toast.success("Added to cart");
-  };
-
-  const handleRemoveFromCart = () => {
-    removeFromCart(productId);
-    toast.info("Removed from cart");
+    navigate("/cart"); // ✅ redirect to Cart page
   };
 
   const handleWishlistToggle = () => {
     if (isInWishlist) {
-      removeFromWishlist(productId);
+      removeFromWishlist(product.id ?? product._id);
       toast.info("Removed from wishlist");
     } else {
       addToWishlist(product);
       toast.success("Added to wishlist");
+      navigate("/wishlist"); // ✅ redirect to Wishlist page
     }
   };
 
@@ -136,7 +129,9 @@ const ProductDetails = () => {
           <div className="new">₹{product.price ?? product.new_price}</div>
         </div>
 
-        <p className="productdisplay-right-description">{product.description}</p>
+        <p className="productdisplay-right-description">
+          {product.description}
+        </p>
 
         {product.category === "dresses" && (
           <div className="productdisplay-right-size">
@@ -145,7 +140,9 @@ const ProductDetails = () => {
               {["S", "M", "L", "XL"].map((s) => (
                 <div
                   key={s}
-                  className={`size-option ${selectedSize === s ? "selected" : ""}`}
+                  className={`size-option ${
+                    selectedSize === s ? "selected" : ""
+                  }`}
                   onClick={() => setSelectedSize(s)}
                 >
                   {s}
@@ -159,12 +156,7 @@ const ProductDetails = () => {
         )}
 
         <div className="productdisplay-right-buttons">
-          {isInCart ? (
-            <button onClick={handleRemoveFromCart}>❌ Remove from Cart</button>
-          ) : (
-            <button onClick={handleAddToCart}>🛒 Add to Cart</button>
-          )}
-
+          <button onClick={handleAddToCart}>🛒 Add to Cart</button>
           <button onClick={handleWishlistToggle}>
             {isInWishlist ? "❌ Remove Wishlist" : "❤️ Add to Wishlist"}
           </button>

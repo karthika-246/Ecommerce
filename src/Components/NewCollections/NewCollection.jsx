@@ -1,60 +1,85 @@
-<<<<<<< HEAD
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { ShopContext } from "../../Context/ShopContext";
-import "./NewCollections.css";
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import "./NewCollections.css";
 
-const Item = ({ _id, id, name, image, new_price, old_price }) => {
-  const navigate = useNavigate();
-  const { addToCart, addToWishlist } = useContext(ShopContext);
+// function NewCollections() {
+//   const [products, setProducts] = useState([]);
 
-  const productId = id || _id;
+//   // Fetch products from backend
+//   const fetchProducts = async () => {
+//     try {
+//       const res = await axios.get("http://localhost:5000/api/products");
+//       setProducts(res.data);
+//     } catch (err) {
+//       toast.error("Failed to load products");
+//     }
+//   };
 
-  return (
-    <div className="product-card">
-      <img
-        src={image}
-        alt={name}
-        className="product-image"
-        onClick={() => navigate(`/product/${productId}`)} // ✅ click to go to details
-      />
-      <h4 className="product-name">{name}</h4>
-      <p className="product-price">
-        ₹{new_price}{" "}
-        {old_price && <span className="product-old-price">₹{old_price}</span>}
-      </p>
-      <div className="product-buttons">
-        <button className="btn-cart" onClick={() => {
-          addToCart(productId);
-          navigate("/cart"); // ✅ after add, go to cart
-        }}>
-          Add to Cart
-        </button>
-        <button className="btn-wishlist" onClick={() => addToWishlist(productId)}>
-          ❤️ Wishlist
-        </button>
-      </div>
-    </div>
-  );
-};
+//   useEffect(() => {
+//     fetchProducts();
+//   }, []);
+
+//   return (
+//     <div className="product-grid">
+//       {products.length === 0 ? (
+//         <p>No products available</p>
+//       ) : (
+//         products.map((p) => (
+//           <div key={p._id} className="product-card">
+//             <img src={p.image} alt={p.name} className="product-image" />
+//             <div className="product-info">
+//               <div className="product-title">{p.name}</div>
+//               <div className="product-prices">
+//                 ₹{p.new_price}
+//                 {p.old_price && <span className="old-price">₹{p.old_price}</span>}
+//               </div>
+//               <div className="action-buttons">
+//                 <button onClick={() => toast.info("Added to cart")}>
+//                   Add to Cart
+//                 </button>
+//                 <button className="wishlist-btn" onClick={() => toast.info("Added to wishlist")}>
+//                   Wishlist
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         ))
+//       )}
+//     </div>
+//   );
+// }
+
+// export default NewCollections;
+import React, { useEffect, useState } from "react";
+import { getNewProducts } from "../../api";
+import "./newcollections.css";
 
 const NewCollections = () => {
-  const [products, setProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/products")
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.log(err));
+    const fetchNewProducts = async () => {
+      try {
+        const { data } = await getNewProducts();
+        setNewProducts(data);
+      } catch (err) {
+        console.error("Error fetching new products:", err);
+      }
+    };
+    fetchNewProducts();
   }, []);
 
   return (
-    <div className="collections-container">
-      <h1 className="collections-title">🛍 New Collections</h1>
-      <div className="collections-grid">
-        {products.map((product) => (
-          <Item key={product._id} {...product} />
+    <div className="new-collections">
+      <h2>🆕 New Collection</h2>
+      <div className="collection-grid">
+        {newProducts.map((product) => (
+          <div key={product._id} className="collection-item">
+            <img src={product.image} alt={product.name} />
+            <h3>{product.name}</h3>
+            <p>₹{product.price}</p>
+          </div>
         ))}
       </div>
     </div>
@@ -62,24 +87,3 @@ const NewCollections = () => {
 };
 
 export default NewCollections;
-=======
-import React from 'react'
-import './NewCollections.css'
-import new_collection from '../Assets/new_collections'
-import Item from '../items/item'
-const NewCollection = () => {
-  return (
-    <div className='newcollections'>
-      <h1>NEW COLLECTIONS</h1>
-      <hr/>
-      <div className="collections">
-        {new_collection.map((item,i)=>{
-         return <Item key={i} id={item.id} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price}/>
-        })}
-      </div>
-    </div>
-  )
-}
-
-export default NewCollection
->>>>>>> 5b91bf0 (updation1)

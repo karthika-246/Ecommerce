@@ -1,33 +1,21 @@
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
-<<<<<<< HEAD
-import ProductDisplay from'./Components/productdisplay/productdisplay';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Shop from './pages/Shop';
+import Categories from "./Components/Categories/category";
 import ShopCategory from './pages/ShopCategory';
-import Product from './pages/Product';
+import ProductDisplay from './Components/productdisplay/productdisplay';
 import UserLogin from'./Components/SignupLogin/Login';
 import UserRegister from'./Components/SignupLogin/Register';
-=======
-import ProductDisplay from './Components/productdisplay/productdisplay';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Shop from './pages/Shop';
-import ShopCategory from './pages/ShopCategory';
-import Product from './pages/Product';
-// import LoginSignup from './pages/LoginSignup';
-import Login from './Components/SignupLogin/Login';
->>>>>>> 5b91bf0 (updation1)
 import Footer from './Components/Footer/Footer';
-import men_banner from './Components/Assets/banner_mens.png';
-import women_banner from './Components/Assets/banner_women.png';
-import kids_banner from './Components/Assets/banner_kids.png';
 import Cart from './pages/Cart';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-<<<<<<< HEAD
+import Wishlist from "./Components/Categories/Wishlist";
 import AdminLogin from './Components/Admin/AdminLogin';
 import AdminRegister from './Components/Admin/AdminRegister';
 import ProductForm from './Components/Admin/ProductForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from "./ErrorBoundary";
+
 
 function App() {
   return (
@@ -35,60 +23,40 @@ function App() {
       <div className="App">
         <Navbar />
 
-        <Routes>
-          {/* Shop Routes */}
-          <Route path="/" element={<Shop />} />
-          <Route path="/product/:id" element={<ProductDisplay />} />
-          <Route path="/product" element={<Product />} />
-          <Route path="/cart" element={<Cart />} />
+        <ErrorBoundary>
+          <Routes>
+            {/* Home / Categories */}
+            <Route path="/" element={<Categories />} />
 
-          {/* Shop Categories */}
-          <Route path="/men" element={<ShopCategory banner={men_banner} category="men" />} />
-          <Route path="/women" element={<ShopCategory banner={women_banner} category="women" />} />
-          <Route path="/kid" element={<ShopCategory banner={kids_banner} category="kid" />} />
+            {/* Product Pages */}
+            <Route path="/product/:id" element={<ProductDisplay />} />
 
-          {/* User Authentication */}
-          <Route path="/login" element={<UserLogin />} />
-          <Route path="/register" element={<UserRegister />} />
+            {/* Cart & Wishlist */}
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
 
-          {/* Admin Authentication */}
-          <Route path="/admin" element={<Navigate to="/admin/login" />} />
-          <Route path="/admin/register" element={<AdminRegister />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
+            {/* Shop Categories using route params */}
+            <Route path="/category/:categoryName" element={<ShopCategory />} />
+            
 
-          {/* Admin Product Form */}
-          <Route path="/admin/productform" element={<ProductForm />} />
-=======
+            {/* User Authentication */}
+            <Route path="/login" element={<UserLogin />} />
+            <Route path="/register" element={<UserRegister />} />
 
-function App() {
-  return (
-    <div>
-      <BrowserRouter>
-        <Navbar />
+            {/* Admin Authentication */}
+            <Route path="/admin" element={<Navigate to="/admin/login" />} />
+            <Route path="/admin/register" element={<AdminRegister />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
 
-        <Routes>
-          <Route path='/' element={<Shop />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/register" element={<Register />} /> */}
-          <Route path='/men' element={<ShopCategory banner={men_banner} category="men" />} />
-          <Route path='/women' element={<ShopCategory banner={women_banner} category="women" />} />
-          <Route path='/kid' element={<ShopCategory banner={kids_banner} category="kid" />} />
-          <Route path='/product' element={<Product />} />
-          <Route path="/product/:id" element={<ProductDisplay />} />
-          <Route path='/cart' element={<Cart />} />
-          {/* <Route path='/login' element={<LoginSignup />} /> */}
->>>>>>> 5b91bf0 (updation1)
-        </Routes>
+            {/* Admin Product Form */}
+            <Route path="/admin/productform" element={<ProductForm />} />
+          </Routes>
+        </ErrorBoundary>
 
         <Footer />
         <ToastContainer position="top-right" autoClose={2000} theme="colored" />
-<<<<<<< HEAD
       </div>
     </BrowserRouter>
-=======
-      </BrowserRouter>
-    </div>
->>>>>>> 5b91bf0 (updation1)
   );
 }
 
