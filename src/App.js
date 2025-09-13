@@ -15,6 +15,7 @@ import ProductForm from './Components/Admin/ProductForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ErrorBoundary from "./ErrorBoundary";
+import AdminDashboard from './Components/Admin/admindashboard';
 
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
             <Route path="/admin" element={<Navigate to="/admin/login" />} />
             <Route path="/admin/register" element={<AdminRegister />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             {/* Admin Product Form */}
             <Route path="/admin/productform" element={<ProductForm />} />
           </Routes>

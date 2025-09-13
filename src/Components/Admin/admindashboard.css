@@ -1,0 +1,192 @@
+/* =======================
+   Admin Dashboard Styles
+========================== */
+
+.admin-container {
+  padding: 30px;
+  max-width: 1000px;
+  margin: auto;
+  background: #f9fafb;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-title {
+  font-size: 28px;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #1a237e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 15px;
+  text-align: left;
+  font-size: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-table th {
+  background: #1a237e;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.admin-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+}
+
+/* Stock Badges */
+.stock-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+}
+
+.in-stock {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.out-stock {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+/* Stock Input */
+.stock-input {
+  padding: 6px 10px;
+  width: 80px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+.stock-input:focus {
+  border: 1px solid #1a237e;
+  box-shadow: 0 0 4px rgba(26, 35, 126, 0.3);
+}
+
+/* Buttons */
+.edit-btn,
+.save-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+
+.edit-btn {
+  background: #f0f4ff;
+  color: #1a237e;
+}
+
+.edit-btn:hover {
+  background: #1a237e;
+  color: #fff;
+}
+
+.save-btn {
+  background: #2e7d32;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background: #1b5e20;
+}
+
+/* Row hover effect */
+.admin-table tbody tr:hover {
+  background: #f9f9ff;
+  transition: background 0.2s ease;
+}
+
+/* =======================
+   Responsive Styles
+========================== */
+@media (max-width: 768px) {
+  .admin-table,
+  .admin-table thead,
+  .admin-table tbody,
+  .admin-table th,
+  .admin-table td,
+  .admin-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-table thead {
+    display: none; /* hide header on mobile */
+  }
+
+  .admin-table tr {
+    margin-bottom: 15px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-table td {
+    border: none;
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .admin-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    flex: 1;
+  }
+
+  .product-cell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-img {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 8px;
+  }
+}

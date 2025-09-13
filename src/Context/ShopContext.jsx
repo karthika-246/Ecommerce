@@ -1,162 +1,310 @@
-// // // import React, { createContext, useState } from 'react';
-// // // import all_product from '../Components/Assets/all_product';
+// // // // // src/Context/ShopContext.js
+// // // // import React, { createContext, useState, useEffect } from "react";
+// // // // import axios from "axios";
+// // // // import categories from "../Components/Categories/SeedData";
+// // // // import all_product from "../Components/Assets/all_product";
 
-// // // export const ShopContext = createContext();
+// // // // export const ShopContext = createContext();
 
-// // // const getDefaultCart = () => {
-// // //   let cart = {};
-// // //   for (let i = 0; i < all_product.length; i++) {
-// // //     cart[all_product[i].id] = 0;
-// // //   }
-// // //   return cart;
-// // // };
+// // // // // 🔹 Flatten seed data
+// // // // const getSeedDataProducts = () => {
+// // // //   let products = [];
+// // // //   categories.forEach((cat) => {
+// // // //     cat.products?.forEach((p) => {
+// // // //       products.push({ ...p, category: cat.name.toLowerCase() });
+// // // //     });
+// // // //     cat.subcategories?.forEach((sub) => {
+// // // //       sub.products?.forEach((p) => {
+// // // //         products.push({ ...p, category: sub.name.toLowerCase() });
+// // // //       });
+// // // //     });
+// // // //   });
+// // // //   return products;
+// // // // };
 
-// // // const ShopContextProvider = (props) => {
-// // //   const [cartItems, setCartItems] = useState(getDefaultCart());
-// // //   const [wishlistItems, setWishlistItems] = useState([]);
+// // // // // 🔹 Merge & deduplicate
+// // // // const mergeUniqueProducts = (extra = []) => {
+// // // //   const combined = [...all_product, ...getSeedDataProducts(), ...extra];
+// // // //   const unique = [];
+// // // //   const seen = new Set();
+// // // //   combined.forEach((p) => {
+// // // //     const key = String(p._id || p.id);
+// // // //     if (!seen.has(key)) {
+// // // //       seen.add(key);
+// // // //       // ✅ Ensure stock field always exists
+// // // //       unique.push({ ...p, stock: p.stock ?? 10 });
+// // // //     }
+// // // //   });
+// // // //   return unique;
+// // // // };
 
-// // //   const addToCart = (itemId) => {
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: prev[itemId] + 1,
-// // //     }));
-// // //   };
+// // // // export const ShopProvider = ({ children }) => {
+// // // //   const [cartItems, setCartItems] = useState({});
+// // // //   const [cartOrder, setCartOrder] = useState([]);
+// // // //   const [allProducts, setAllProducts] = useState(mergeUniqueProducts());
 
-// // //   const removeFromCart = (itemId) => {
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: prev[itemId] - 1,
-// // //     }));
-// // //   };
+// // // //   // ✅ Fetch products from backend on load
+// // // //   useEffect(() => {
+// // // //     const fetchProducts = async () => {
+// // // //       try {
+// // // //         const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // // //         setAllProducts(mergeUniqueProducts(res.data));
+// // // //       } catch (err) {
+// // // //         console.error("Error fetching products:", err);
+// // // //       }
+// // // //     };
+// // // //     fetchProducts();
+// // // //   }, []);
 
-// // //   const updateCartItemCount = (newAmount, itemId) => {
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: Number(newAmount),
-// // //     }));
-// // //   };
+// // // //   // ✅ Update stock in backend (relative change)
+// // // //   const updateStock = async (id, change) => {
+// // // //     try {
+// // // //       await axios.put(`http://localhost:5000/api/product/updateStock/${id}`, {
+// // // //         change,
+// // // //       });
+// // // //       // Refresh after update
+// // // //       const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // // //       setAllProducts(mergeUniqueProducts(res.data));
+// // // //     } catch (err) {
+// // // //       console.error("Error updating stock:", err);
+// // // //     }
+// // // //   };
 
-// // //   const getTotalCartAmount = () => {
-// // //     let totalAmount = 0;
-// // //     for (const itemId in cartItems) {
-// // //       if (cartItems[itemId] > 0) {
-// // //         const product = all_product.find((p) => p.id === Number(itemId));
-// // //         if (product) {
-// // //           totalAmount += product.new_price * cartItems[itemId];
-// // //         }
-// // //       }
-// // //     }
-// // //     return totalAmount;
-// // //   };
+// // // //   // ✅ Direct stock set (Admin override)
+// // // //   const setStock = async (id, newStock) => {
+// // // //     try {
+// // // //       await axios.put(`http://localhost:5000/api/product/setStock/${id}`, {
+// // // //         stock: newStock,
+// // // //       });
+// // // //       // Refresh after update
+// // // //       const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // // //       setAllProducts(mergeUniqueProducts(res.data));
+// // // //     } catch (err) {
+// // // //       console.error("Error setting stock:", err);
+// // // //     }
+// // // //   };
 
-// // //   const addToWishlist = (itemId) => {
-// // //     setWishlistItems((prev) => [...prev, itemId]);
-// // //   };
+// // // //   // Add to cart
+// // // //   const addToCart = (id) => {
+// // // //     const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+// // // //     if (!product || product.stock <= 0) return; // prevent adding if out of stock
 
-// // //   const removeFromWishlist = (itemId) => {
-// // //     setWishlistItems((prev) => prev.filter((id) => id !== itemId));
-// // //   };
+// // // //     setCartItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+// // // //     setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+// // // //     updateStock(id, -1); // 🔹 Decrease stock
+// // // //   };
 
-// // //   return (
-// // //     <ShopContext.Provider
-// // //       value={{
-// // //         all_product,
-// // //         cartItems,
-// // //         addToCart,
-// // //         removeFromCart,
-// // //         updateCartItemCount, 
-// // //         getTotalCartAmount,
-// // //         wishlistItems,
-// // //         addToWishlist,
-// // //         removeFromWishlist
-// // //       }}
-// // //     >
-// // //       {props.children}
-// // //     </ShopContext.Provider>
-// // //   );
-// // // };
+// // // //   // Remove completely from cart
+// // // //   const removeFromCart = (id) => {
+// // // //     const qty = cartItems[id] || 0;
+// // // //     if (qty > 0) updateStock(id, qty); // 🔹 Restore all removed
+// // // //     setCartItems((prev) => ({ ...prev, [id]: 0 }));
+// // // //     setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// // // //   };
 
-// // // export default ShopContextProvider;
-// // // import React, { createContext, useState } from "react";
+// // // //   // Update quantity (increase/decrease)
+// // // //   const updateCartItemCount = (newAmount, id) => {
+// // // //     const current = cartItems[id] || 0;
+// // // //     setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+
+// // // //     if (newAmount > current) {
+// // // //       updateStock(id, -(newAmount - current)); // 🔹 Decrease stock
+// // // //     } else if (newAmount < current) {
+// // // //       updateStock(id, current - newAmount); // 🔹 Restore stock
+// // // //     }
+
+// // // //     if (newAmount === 0) {
+// // // //       setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// // // //     }
+// // // //   };
+
+// // // //   // Get total cart amount
+// // // //   const getTotalCartAmount = () => {
+// // // //     let total = 0;
+// // // //     for (const item in cartItems) {
+// // // //       if (cartItems[item] > 0) {
+// // // //         const product = allProducts.find(
+// // // //           (p) => String(p._id || p.id) === String(item)
+// // // //         );
+// // // //         if (product) {
+// // // //           total += (product.price || product.new_price) * cartItems[item];
+// // // //         }
+// // // //       }
+// // // //     }
+// // // //     return total;
+// // // //   };
+
+// // // //   return (
+// // // //     <ShopContext.Provider
+// // // //       value={{
+// // // //         all_product: allProducts,
+// // // //         cartItems,
+// // // //         cartOrder,
+// // // //         addToCart,
+// // // //         removeFromCart,
+// // // //         updateCartItemCount,
+// // // //         getTotalCartAmount,
+// // // //         setAllProducts,
+// // // //         setStock, // ✅ Admin can override stock
+// // // //       }}
+// // // //     >
+// // // //       {children}
+// // // //     </ShopContext.Provider>
+// // // //   );
+// // // // };
+
+// // // // export default ShopProvider;
+// // // // src/Context/ShopContext.js
+// // // import React, { createContext, useState, useEffect } from "react";
+// // // import axios from "axios";
+// // // import categories from "../Components/Categories/SeedData";
 // // // import all_product from "../Components/Assets/all_product";
 
 // // // export const ShopContext = createContext();
 
-// // // const getDefaultCart = () => {
-// // //   let cart = {};
-// // //   all_product.forEach((product) => {
-// // //     cart[String(product.id)] = 0; // ✅ String keys
+// // // // 🔹 Flatten seed data
+// // // const getSeedDataProducts = () => {
+// // //   let products = [];
+// // //   categories.forEach((cat) => {
+// // //     cat.products?.forEach((p) => {
+// // //       products.push({ ...p, category: cat.name.toLowerCase() });
+// // //     });
+// // //     cat.subcategories?.forEach((sub) => {
+// // //       sub.products?.forEach((p) => {
+// // //         products.push({ ...p, category: sub.name.toLowerCase() });
+// // //       });
+// // //     });
 // // //   });
-// // //   return cart;
+// // //   return products;
 // // // };
 
-// // // const ShopContextProvider = ({ children }) => {
-// // //   const [cartItems, setCartItems] = useState(getDefaultCart());
-// // //   const [wishlistItems, setWishlistItems] = useState([]);
+// // // // 🔹 Merge & deduplicate
+// // // const mergeUniqueProducts = (extra = []) => {
+// // //   const combined = [...all_product, ...getSeedDataProducts(), ...extra];
+// // //   const unique = [];
+// // //   const seen = new Set();
 
-// // //   // Add to cart
-// // //   const addToCart = (product) => {
-// // //     const itemId = String(product.id);
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: (prev[itemId] || 0) + 1,
-// // //     }));
+// // //   combined.forEach((p) => {
+// // //     const key = String(p._id || p.id);
+// // //     if (!seen.has(key)) {
+// // //       seen.add(key);
+// // //       // ✅ Ensure stock field always exists
+// // //       unique.push({ ...p, stock: p.stock ?? 10 });
+// // //     }
+// // //   });
+// // //   return unique;
+// // // };
+
+// // // export const ShopProvider = ({ children }) => {
+// // //   const [cartItems, setCartItems] = useState({});
+// // //   const [cartOrder, setCartOrder] = useState([]);
+// // //   const [allProducts, setAllProducts] = useState(mergeUniqueProducts());
+
+// // //   // ✅ Fetch products from backend on load
+// // //   useEffect(() => {
+// // //     const fetchProducts = async () => {
+// // //       try {
+// // //         const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // //         setAllProducts(mergeUniqueProducts(res.data));
+// // //       } catch (err) {
+// // //         console.error("Error fetching products:", err);
+// // //       }
+// // //     };
+// // //     fetchProducts();
+// // //   }, []);
+
+// // //   // ✅ Update stock in backend (relative change)
+// // //   const updateStock = async (id, change) => {
+// // //     try {
+// // //       await axios.put(`http://localhost:5000/api/product/updateStock/${id}`, {
+// // //         change,
+// // //       });
+// // //       // Refresh products after update
+// // //       const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // //       setAllProducts(mergeUniqueProducts(res.data));
+// // //     } catch (err) {
+// // //       console.error("Error updating stock:", err);
+// // //     }
 // // //   };
 
-// // //   // Remove from cart
-// // //   const removeFromCart = (itemId) => {
-// // //     itemId = String(itemId);
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0,
-// // //     }));
+// // //   // ✅ Direct stock set (Admin override)
+// // //   const setStock = async (id, newStock) => {
+// // //     try {
+// // //       await axios.put(`http://localhost:5000/api/product/setStock/${id}`, {
+// // //         stock: newStock,
+// // //       });
+// // //       // Refresh after update
+// // //       const res = await axios.get("http://localhost:5000/api/product/getAll");
+// // //       setAllProducts(mergeUniqueProducts(res.data));
+// // //     } catch (err) {
+// // //       console.error("Error setting stock:", err);
+// // //     }
 // // //   };
 
-// // //   // Update quantity
-// // //   const updateCartItemCount = (newAmount, itemId) => {
-// // //     itemId = String(itemId);
-// // //     setCartItems((prev) => ({
-// // //       ...prev,
-// // //       [itemId]: Number(newAmount),
-// // //     }));
+// // //   // 🔹 Add to cart
+// // //   const addToCart = (id) => {
+// // //     const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+// // //     if (!product || product.stock <= 0) return; // prevent adding if out of stock
+
+// // //     setCartItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+// // //     setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+// // //     updateStock(id, -1); // reduce stock
 // // //   };
 
-// // //   // Calculate grand total
+// // //   // 🔹 Remove completely from cart (restore full qty)
+// // //   const removeFromCart = (id) => {
+// // //     const qty = cartItems[id] || 0;
+// // //     if (qty > 0) updateStock(id, qty); // restore stock
+// // //     setCartItems((prev) => ({ ...prev, [id]: 0 }));
+// // //     setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// // //   };
+
+// // //   // 🔹 Update cart item count (increase/decrease with sync to stock)
+// // //   const updateCartItemCount = (newAmount, id) => {
+// // //     const current = cartItems[id] || 0;
+// // //     setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+
+// // //     if (newAmount > current) {
+// // //       updateStock(id, -(newAmount - current)); // decrease stock
+// // //     } else if (newAmount < current) {
+// // //       updateStock(id, current - newAmount); // restore stock
+// // //     }
+
+// // //     if (newAmount === 0) {
+// // //       setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// // //     } else {
+// // //       setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+// // //     }
+// // //   };
+
+// // //   // 🔹 Total cart amount
 // // //   const getTotalCartAmount = () => {
 // // //     let total = 0;
-// // //     for (const itemId in cartItems) {
-// // //       if (cartItems[itemId] > 0) {
-// // //         const product = all_product.find((p) => String(p.id) === itemId);
-// // //         if (product) total += product.price * cartItems[itemId];
+// // //     for (const item in cartItems) {
+// // //       if (cartItems[item] > 0) {
+// // //         const product = allProducts.find(
+// // //           (p) => String(p._id || p.id) === String(item)
+// // //         );
+// // //         if (product) {
+// // //           total += (product.price || product.new_price) * cartItems[item];
+// // //         }
 // // //       }
 // // //     }
 // // //     return total;
 // // //   };
 
-// // //   // Add to wishlist
-// // //   const addToWishlist = (product) => {
-// // //     if (!wishlistItems.find((p) => p.id === product.id)) {
-// // //       setWishlistItems([...wishlistItems, product]);
-// // //     }
-// // //   };
-
-// // //   // Remove from wishlist
-// // //   const removeFromWishlist = (itemId) => {
-// // //     setWishlistItems((prev) => prev.filter((p) => p.id !== itemId));
-// // //   };
-
 // // //   return (
 // // //     <ShopContext.Provider
 // // //       value={{
-// // //         all_product,
+// // //         all_product: allProducts,
 // // //         cartItems,
+// // //         cartOrder,
 // // //         addToCart,
 // // //         removeFromCart,
 // // //         updateCartItemCount,
 // // //         getTotalCartAmount,
-// // //         wishlistItems,
-// // //         addToWishlist,
-// // //         removeFromWishlist,
+// // //         setAllProducts,
+// // //         setStock, // ✅ Admin override
 // // //       }}
 // // //     >
 // // //       {children}
@@ -164,86 +312,156 @@
 // // //   );
 // // // };
 
-// // // export default ShopContextProvider;
+// // // export default ShopProvider;
+// // // src/Context/ShopContext.jsx
 // // import React, { createContext, useState } from "react";
+// // import { toast } from "react-toastify";
+// // import categories from "../Components/Categories/SeedData";
 // // import all_product from "../Components/Assets/all_product";
 
 // // export const ShopContext = createContext();
 
-// // const getDefaultCart = () => {
-// //   const cart = {};
-// //   all_product.forEach((product) => {
-// //     cart[String(product.id)] = 0; // ✅ Use string keys
+// // // 🔹 Flatten seed data
+// // const getSeedDataProducts = () => {
+// //   let products = [];
+// //   categories.forEach((cat) => {
+// //     cat.products?.forEach((p) => {
+// //       products.push({ ...p, category: cat.name.toLowerCase() });
+// //     });
+// //     cat.subcategories?.forEach((sub) => {
+// //       sub.products?.forEach((p) => {
+// //         products.push({ ...p, category: sub.name.toLowerCase() });
+// //       });
+// //     });
 // //   });
-// //   return cart;
+// //   return products;
 // // };
 
-// // const ShopContextProvider = ({ children }) => {
-// //   const [cartItems, setCartItems] = useState(getDefaultCart());
-// //   const [wishlistItems, setWishlistItems] = useState([]);
+// // // 🔹 Merge & deduplicate
+// // const mergeUniqueProducts = (extra = []) => {
+// //   const combined = [...all_product, ...getSeedDataProducts(), ...extra];
+// //   const unique = [];
+// //   const seen = new Set();
 
-// //   // Add to cart
-// //   const addToCart = (product) => {
-// //     const id = String(product.id);
-// //     setCartItems((prev) => ({
-// //       ...prev,
-// //       [id]: (prev[id] || 0) + 1,
-// //     }));
+// //   combined.forEach((p) => {
+// //     const key = String(p._id || p.id);
+// //     if (!seen.has(key)) {
+// //       seen.add(key);
+// //       unique.push({ ...p, stock: p.stock ?? 10 }); // default stock = 10
+// //     }
+// //   });
+// //   return unique;
+// // };
+
+// // export const ShopProvider = ({ children }) => {
+// //   const [cartItems, setCartItems] = useState({});
+// //   const [cartOrder, setCartOrder] = useState([]);
+// //   const [allProducts, setAllProducts] = useState(mergeUniqueProducts());
+
+// //   // ✅ Update stock locally
+// //   const updateStock = async (id, change) => {
+// //     try {
+// //       setAllProducts((prev) =>
+// //         prev.map((p) =>
+// //           String(p._id || p.id) === String(id)
+// //             ? { ...p, stock: Math.max(0, (p.stock || 0) + change) }
+// //             : p
+// //         )
+// //       );
+// //       return true;
+// //     } catch (err) {
+// //       console.error("Error updating stock:", err);
+// //       toast.error("❌ Failed to update stock (local)");
+// //       return false;
+// //     }
 // //   };
 
-// //   // Remove from cart
-// //   const removeFromCart = (itemId) => {
-// //     itemId = String(itemId);
-// //     setCartItems((prev) => ({
-// //       ...prev,
-// //       [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0,
-// //     }));
+// //   // ✅ Admin override
+// //   const setStock = async (id, newStock) => {
+// //     try {
+// //       setAllProducts((prev) =>
+// //         prev.map((p) =>
+// //           String(p._id || p.id) === String(id)
+// //             ? { ...p, stock: newStock }
+// //             : p
+// //         )
+// //       );
+// //       toast.success("✅ Stock updated (local)");
+// //       return true;
+// //     } catch (err) {
+// //       console.error("Error setting stock:", err);
+// //       toast.error("❌ Failed to set stock (local)");
+// //       return false;
+// //     }
 // //   };
 
-// //   // Update quantity
-// //   const updateCartItemCount = (amount, itemId) => {
-// //     itemId = String(itemId);
-// //     setCartItems((prev) => ({
-// //       ...prev,
-// //       [itemId]: Number(amount),
-// //     }));
+// //   // 🔹 Add to cart
+// //   const addToCart = async (id) => {
+// //     const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+// //     if (!product || product.stock <= 0) {
+// //       toast.warn("⚠️ Product is currently unavailable");
+// //       return;
+// //     }
+
+// //     setCartItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+// //     setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+// //     await updateStock(id, -1); // reduce stock
 // //   };
 
-// //   // Calculate total
+// //   // 🔹 Remove completely from cart
+// //   const removeFromCart = async (id) => {
+// //     const qty = cartItems[id] || 0;
+// //     if (qty > 0) await updateStock(id, qty); // restore stock
+// //     setCartItems((prev) => ({ ...prev, [id]: 0 }));
+// //     setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// //   };
+
+// //   // 🔹 Update cart count
+// //   const updateCartItemCount = async (newAmount, id) => {
+// //     const current = cartItems[id] || 0;
+// //     setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+
+// //     if (newAmount > current) {
+// //       await updateStock(id, -(newAmount - current));
+// //     } else if (newAmount < current) {
+// //       await updateStock(id, current - newAmount);
+// //     }
+
+// //     if (newAmount === 0) {
+// //       setCartOrder((prev) => prev.filter((pid) => pid !== id));
+// //     } else {
+// //       setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+// //     }
+// //   };
+
+// //   // 🔹 Cart total
 // //   const getTotalCartAmount = () => {
 // //     let total = 0;
-// //     for (const itemId in cartItems) {
-// //       const product = all_product.find((p) => String(p.id) === itemId);
-// //       if (product && cartItems[itemId] > 0) {
-// //         total += cartItems[itemId] * (product.price || product.new_price || 0);
+// //     for (const item in cartItems) {
+// //       if (cartItems[item] > 0) {
+// //         const product = allProducts.find(
+// //           (p) => String(p._id || p.id) === String(item)
+// //         );
+// //         if (product) {
+// //           total += (product.price || product.new_price) * cartItems[item];
+// //         }
 // //       }
 // //     }
 // //     return total;
 // //   };
 
-// //   // Wishlist
-// //   const addToWishlist = (product) => {
-// //     if (!wishlistItems.find((p) => p.id === product.id)) {
-// //       setWishlistItems([...wishlistItems, product]);
-// //     }
-// //   };
-
-// //   const removeFromWishlist = (id) => {
-// //     setWishlistItems((prev) => prev.filter((p) => p.id !== id));
-// //   };
-
 // //   return (
 // //     <ShopContext.Provider
 // //       value={{
-// //         all_product,
+// //         all_product: allProducts,
 // //         cartItems,
+// //         cartOrder,
 // //         addToCart,
 // //         removeFromCart,
 // //         updateCartItemCount,
 // //         getTotalCartAmount,
-// //         wishlistItems,
-// //         addToWishlist,
-// //         removeFromWishlist,
+// //         setAllProducts,
+// //         setStock, // Admin override
 // //       }}
 // //     >
 // //       {children}
@@ -251,63 +469,171 @@
 // //   );
 // // };
 
-// // export default ShopContextProvider;
-// // src/Context/ShopContext.js
-// import React, { createContext, useState } from "react";
+// // export default ShopProvider;
+
+
+
+
+
+
+
+
+// import React, { createContext, useState, useEffect } from "react";
 // import all_product from "../Components/Assets/all_product";
+// import categories from "../Components/Categories/SeedData";
 
 // export const ShopContext = createContext();
 
-// const getDefaultCart = () => {
-//   let cart = {};
-//   for (let i = 0; i < all_product.length; i++) {
-//     cart[all_product[i].id] = 0;
-//   }
-//   return cart;
-// };
-
 // const ShopProvider = ({ children }) => {
-//   const [cartItems, setCartItems] = useState(getDefaultCart());
+//   const [cartItems, setCartItems] = useState({});
+//   const [allProducts, setAllProducts] = useState([]);
 
+//   // 🔹 Flatten seed data
+//   const getSeedDataProducts = () => {
+//     let products = [];
+//     categories.forEach((cat) => {
+//       if (cat.products) {
+//         products = [...products, ...cat.products];
+//       }
+//       if (cat.subcategories) {
+//         cat.subcategories.forEach((sub) => {
+//           if (sub.products) {
+//             products = [...products, ...sub.products];
+//           }
+//         });
+//       }
+//     });
+//     return products;
+//   };
+
+//   // 🔹 Merge & Deduplicate
+//   const mergeUniqueProducts = (extra = []) => {
+//     const combined = [...all_product, ...getSeedDataProducts(), ...extra];
+//     const unique = [];
+//     const seen = new Set();
+
+//     combined.forEach((p) => {
+//       const key = String(p._id || p.id);
+//       if (!seen.has(key)) {
+//         seen.add(key);
+//         unique.push({
+//           ...p,
+//           stock: p.stock !== undefined ? p.stock : 10, // default stock
+//         });
+//       }
+//     });
+
+//     return unique;
+//   };
+
+//   // 🔹 Load from localStorage OR defaults
+//   useEffect(() => {
+//     const saved = localStorage.getItem("products");
+//     if (saved) {
+//       setAllProducts(JSON.parse(saved));
+//     } else {
+//       setAllProducts(mergeUniqueProducts());
+//     }
+//   }, []);
+
+//   // 🔹 Persist to localStorage
+//   useEffect(() => {
+//     if (allProducts.length > 0) {
+//       localStorage.setItem("products", JSON.stringify(allProducts));
+//     }
+//   }, [allProducts]);
+
+//   // 🔹 Cart Actions
 //   const addToCart = (id) => {
+//     const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+//     if (!product || product.stock <= 0) return;
+
 //     setCartItems((prev) => ({
 //       ...prev,
-//       [id]: prev[id] + 1,
+//       [id]: (prev[id] || 0) + 1,
 //     }));
+
+//     setAllProducts((prev) =>
+//       prev.map((p) =>
+//         String(p._id || p.id) === String(id)
+//           ? { ...p, stock: p.stock - 1 }
+//           : p
+//       )
+//     );
 //   };
 
 //   const removeFromCart = (id) => {
+//     const qty = cartItems[id] || 0;
+//     if (qty > 0) {
+//       setAllProducts((prev) =>
+//         prev.map((p) =>
+//           String(p._id || p.id) === String(id)
+//             ? { ...p, stock: p.stock + qty }
+//             : p
+//         )
+//       );
+//     }
 //     setCartItems((prev) => ({ ...prev, [id]: 0 }));
 //   };
 
 //   const updateCartItemCount = (newAmount, id) => {
-//     if (newAmount >= 0) {
-//       setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+//     const current = cartItems[id] || 0;
+//     const diff = newAmount - current;
+
+//     if (diff > 0) {
+//       // user adding more
+//       const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+//       if (!product || product.stock < diff) return; // not enough stock
 //     }
+
+//     setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+
+//     setAllProducts((prev) =>
+//       prev.map((p) => {
+//         if (String(p._id || p.id) === String(id)) {
+//           return { ...p, stock: p.stock - diff };
+//         }
+//         return p;
+//       })
+//     );
 //   };
 
 //   const getTotalCartAmount = () => {
-//     let total = 0;
-//     for (const item in cartItems) {
-//       if (cartItems[item] > 0) {
-//         const product = all_product.find((p) => p.id === Number(item));
-//         if (product) {
-//           total += (product.price || product.new_price) * cartItems[item];
-//         }
-//       }
-//     }
-//     return total;
+//     return Object.entries(cartItems).reduce((total, [id, qty]) => {
+//       const product = allProducts.find(
+//         (p) => String(p._id || p.id) === String(id)
+//       );
+//       return total + (product ? (product.price || product.new_price || 0) * qty : 0);
+//     }, 0);
+//   };
+
+//   // 🔹 Admin stock update
+//   const updateStock = (id, newStock) => {
+//     setAllProducts((prev) =>
+//       prev.map((p) =>
+//         String(p._id || p.id) === String(id) ? { ...p, stock: newStock } : p
+//       )
+//     );
+//   };
+
+//   // 🔹 Reset products back to defaults
+//   const resetStock = () => {
+//     const fresh = mergeUniqueProducts();
+//     setAllProducts(fresh);
+//     localStorage.setItem("products", JSON.stringify(fresh));
 //   };
 
 //   return (
 //     <ShopContext.Provider
 //       value={{
-//         all_product,
+//         all_product: allProducts,
 //         cartItems,
 //         addToCart,
 //         removeFromCart,
 //         updateCartItemCount,
 //         getTotalCartAmount,
+//         updateStock,
+//         resetStock,
 //       }}
 //     >
 //       {children}
@@ -316,21 +642,37 @@
 // };
 
 // export default ShopProvider;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { createContext, useState } from "react";
-import all_product from "../Components/Assets/all_product";
+import { toast } from "react-toastify";
 import categories from "../Components/Categories/SeedData";
+import all_product from "../Components/Assets/all_product";
 
 export const ShopContext = createContext();
 
-// 🔹 Flatten SeedData products and assign category
+// 🔹 Flatten seed data
 const getSeedDataProducts = () => {
   let products = [];
   categories.forEach((cat) => {
-    // Products directly under category
     cat.products?.forEach((p) => {
       products.push({ ...p, category: cat.name.toLowerCase() });
     });
-    // Products under subcategories
     cat.subcategories?.forEach((sub) => {
       sub.products?.forEach((p) => {
         products.push({ ...p, category: sub.name.toLowerCase() });
@@ -340,9 +682,9 @@ const getSeedDataProducts = () => {
   return products;
 };
 
-// 🔹 Merge & Deduplicate Products by id/_id
-const mergeUniqueProducts = () => {
-  const combined = [...all_product, ...getSeedDataProducts()];
+// 🔹 Merge & deduplicate
+const mergeUniqueProducts = (extra = []) => {
+  const combined = [...all_product, ...getSeedDataProducts(), ...extra];
   const unique = [];
   const seen = new Set();
 
@@ -350,65 +692,99 @@ const mergeUniqueProducts = () => {
     const key = String(p._id || p.id);
     if (!seen.has(key)) {
       seen.add(key);
-      unique.push(p);
+      unique.push({ ...p, stock: p.stock ?? 10 }); // default stock = 10
     }
   });
-
   return unique;
 };
 
-const mergedProducts = mergeUniqueProducts();
-
-// 🔹 Create empty cart with default quantities
-const getDefaultCart = () => {
-  let cart = {};
-  mergedProducts.forEach((p) => {
-    const key = String(p._id || p.id);
-    cart[key] = 0;
-  });
-  return cart;
-};
-
 export const ShopProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(getDefaultCart());
-  const [cartOrder, setCartOrder] = useState([]); // ✅ tracks order of products
+  const [cartItems, setCartItems] = useState({});
+  const [cartOrder, setCartOrder] = useState([]);
+  const [allProducts, setAllProducts] = useState(mergeUniqueProducts());
 
-  // Add item to cart
-  const addToCart = (id) => {
-    setCartItems((prev) => {
-      const newQty = (prev[id] || 0) + 1;
-      return { ...prev, [id]: newQty };
-    });
-
-    // ✅ Move product to front of cartOrder if already exists, else add it
-    setCartOrder((prev) => {
-      const filtered = prev.filter((pid) => pid !== id);
-      return [id, ...filtered];
-    });
+  // ✅ Update stock locally
+  const updateStock = async (id, change) => {
+    try {
+      setAllProducts((prev) =>
+        prev.map((p) =>
+          String(p._id || p.id) === String(id)
+            ? { ...p, stock: Math.max(0, (p.stock || 0) + change) }
+            : p
+        )
+      );
+      return true;
+    } catch (err) {
+      console.error("Error updating stock:", err);
+      toast.error("❌ Failed to update stock (local)");
+      return false;
+    }
   };
 
-  // Remove item completely from cart
-  const removeFromCart = (id) => {
+  // ✅ Admin override
+  const setStock = async (id, newStock) => {
+    try {
+      setAllProducts((prev) =>
+        prev.map((p) =>
+          String(p._id || p.id) === String(id)
+            ? { ...p, stock: newStock }
+            : p
+        )
+      );
+      toast.success("✅ Stock updated (local)");
+      return true;
+    } catch (err) {
+      console.error("Error setting stock:", err);
+      toast.error("❌ Failed to set stock (local)");
+      return false;
+    }
+  };
+
+  // 🔹 Add to cart
+  const addToCart = async (id) => {
+    const product = allProducts.find((p) => String(p._id || p.id) === String(id));
+    if (!product || product.stock <= 0) {
+      toast.warn("⚠️ Product is currently unavailable");
+      return;
+    }
+
+    setCartItems((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
+    await updateStock(id, -1); // reduce stock
+  };
+
+  // 🔹 Remove completely from cart
+  const removeFromCart = async (id) => {
+    const qty = cartItems[id] || 0;
+    if (qty > 0) await updateStock(id, qty); // restore stock
     setCartItems((prev) => ({ ...prev, [id]: 0 }));
     setCartOrder((prev) => prev.filter((pid) => pid !== id));
   };
 
-  // Update cart count (increment/decrement)
-  const updateCartItemCount = (newAmount, id) => {
-    if (newAmount >= 0) {
-      setCartItems((prev) => ({ ...prev, [id]: newAmount }));
-      if (newAmount === 0) {
-        setCartOrder((prev) => prev.filter((pid) => pid !== id));
-      }
+  // 🔹 Update cart count
+  const updateCartItemCount = async (newAmount, id) => {
+    const current = cartItems[id] || 0;
+    setCartItems((prev) => ({ ...prev, [id]: newAmount }));
+
+    if (newAmount > current) {
+      await updateStock(id, -(newAmount - current));
+    } else if (newAmount < current) {
+      await updateStock(id, current - newAmount);
+    }
+
+    if (newAmount === 0) {
+      setCartOrder((prev) => prev.filter((pid) => pid !== id));
+    } else {
+      setCartOrder((prev) => [id, ...prev.filter((pid) => pid !== id)]);
     }
   };
 
-  // Calculate grand total
+  // 🔹 Cart total
   const getTotalCartAmount = () => {
     let total = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        const product = mergedProducts.find(
+        const product = allProducts.find(
           (p) => String(p._id || p.id) === String(item)
         );
         if (product) {
@@ -422,13 +798,15 @@ export const ShopProvider = ({ children }) => {
   return (
     <ShopContext.Provider
       value={{
-        all_product: mergedProducts,
+        all_product: allProducts,
         cartItems,
-        cartOrder, // ✅ expose order
+        cartOrder,
         addToCart,
         removeFromCart,
         updateCartItemCount,
         getTotalCartAmount,
+        setAllProducts,
+        setStock, // Admin override
       }}
     >
       {children}
